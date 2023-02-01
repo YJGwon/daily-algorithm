@@ -5,11 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 public class Boj10814 {
 
@@ -19,19 +15,22 @@ public class Boj10814 {
         StringTokenizer st;
 
         final int n = Integer.parseInt(br.readLine());
-        final TreeMap<Integer, List<String>> map = new TreeMap<>();
+        final StringBuilder[] memory = new StringBuilder[200];
         for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
+            final String line = br.readLine();
+            st = new StringTokenizer(line);
             final int age = Integer.parseInt(st.nextToken());
-            final String name = st.nextToken();
-            map.putIfAbsent(age, new ArrayList<>());
-            map.get(age).add(name);
+
+            final int index = age - 1;
+            if (memory[index] == null) {
+                memory[index] = new StringBuilder();
+            }
+            memory[index].append(line).append("\n");
         }
 
-        for (Entry<Integer, List<String>> entry : map.entrySet()) {
-            final Integer age = entry.getKey();
-            for (String name : entry.getValue()) {
-                bw.write(age + " " + name + "\n");
+        for (StringBuilder line : memory) {
+            if (line != null) {
+                bw.write(line.toString());
             }
         }
 
