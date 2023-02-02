@@ -15,13 +15,18 @@ public class Boj14659 {
         StringTokenizer st;
 
         final int n = Integer.parseInt(br.readLine());
-        st = new StringTokenizer(br.readLine());
+        final int[] peeks = new int[n];
 
-        int dealer = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            peeks[i] = Integer.parseInt(st.nextToken());
+        }
+
+        int dealer = peeks[0];
         int count = 0;
         int maxCount = 0;
         for (int i = 1; i < n; i++) {
-            int peek = Integer.parseInt(st.nextToken());
+            int peek = peeks[i];
             if (peek > dealer) {
                 maxCount = Math.max(count, maxCount);
                 dealer = peek;
