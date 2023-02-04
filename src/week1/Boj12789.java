@@ -18,27 +18,27 @@ public class Boj12789 {
 
         int order = 1;
         for (int i = 0; i < N; i++) {
+            final int ticket = Integer.parseInt(st.nextToken());
+            if (ticket != order) {
+                waitingLine.push(ticket);
+                continue;
+            }
+            order++;
             while (!waitingLine.isEmpty() && waitingLine.peek() == order) {
                 waitingLine.pop();
                 order++;
             }
-            final int ticket = Integer.parseInt(st.nextToken());
-            if (ticket == order) {
+        }
+
+        while (!waitingLine.isEmpty()) {
+            if (waitingLine.pop() == order) {
                 order++;
-                continue;
+            } else {
+                System.out.println("Sad");
+                return;
             }
-            waitingLine.push(ticket);
         }
 
-        while (!waitingLine.isEmpty() && waitingLine.peek() == order) {
-            waitingLine.pop();
-            order++;
-        }
-
-        if (waitingLine.isEmpty()) {
-            System.out.println("Nice");
-        } else {
-            System.out.println("Sad");
-        }
+        System.out.println("Nice");
     }
 }
