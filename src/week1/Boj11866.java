@@ -23,23 +23,22 @@ public class Boj11866 {
             queue.add(i);
         }
 
-        final String[] output = new String[n];
-        int index = 0;
         int target = k - 1;
 
-        while (!queue.isEmpty()) {
+        bw.write("<");
+        while (true) {
+            bw.write(String.valueOf(queue.remove(target)));
+            if (queue.isEmpty()) {
+                break;
+            }
+            bw.write(", ");
+            target = target + k - 1;
             if (target >= queue.size()) {
                 target = target % queue.size();
             }
-            final Integer removed = queue.remove(target);
-            output[index] = String.valueOf(removed);
-            target = target + k - 1;
-            index++;
         }
-
-        bw.write("<");
-        bw.write(String.join(", ", output));
         bw.write(">");
+
         bw.flush();
     }
 }
