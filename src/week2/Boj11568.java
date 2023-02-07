@@ -3,6 +3,7 @@ package week2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Boj11568 {
@@ -25,11 +26,9 @@ public class Boj11568 {
                 count++;
                 continue;
             }
-            for (int j = 0; j < count; j++) {
-                if (picked[j] >= element) {
-                    picked[j] = element;
-                    break;
-                }
+            final int index = Arrays.binarySearch(picked, 0, count, element);
+            if (index < 0) {
+                picked[index * -1 - 1] = element;
             }
         }
         System.out.println(count);
