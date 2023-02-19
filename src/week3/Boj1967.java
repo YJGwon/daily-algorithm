@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Boj1967 {
 
-    static HashMap<Integer, List<int[]>> graph;
+    static List<int[]>[] graph;
     static boolean[] visited;
     static int maxWeight = 0;
     static int maxNode = 0;
@@ -23,16 +22,24 @@ public class Boj1967 {
         StringTokenizer st;
 
         int n = Integer.parseInt(br.readLine());
-        graph = new HashMap<>();
+        if (n < 2) {
+            bw.write("0");
+            bw.flush();
+            return;
+        }
+
+        graph = new List[n + 1];
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
         for (int i = 0; i < n - 1; i++) {
             st = new StringTokenizer(br.readLine());
             int p = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
-            graph.putIfAbsent(p, new ArrayList<>());
-            graph.putIfAbsent(c, new ArrayList<>());
-            graph.get(p).add(new int[] {c, w});
-            graph.get(c).add(new int[] {p, w});
+            graph[p].add(new int[] {c, w});
+            graph[c].add(new int[] {p, w});
         }
 
         visited = new boolean[n + 1];
@@ -52,10 +59,7 @@ public class Boj1967 {
             maxNode = node;
         }
 
-        List<int[]> edges = graph.get(node);
-        if (edges == null) {
-            return;
-        }
+        List<int[]> edges = graph[node];
         for (int[] edge : edges) {
             if (!visited[edge[0]]) {
                 dfs(edge[0], weight + edge[1]);
