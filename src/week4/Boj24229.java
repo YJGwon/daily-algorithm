@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
@@ -30,9 +29,9 @@ public class Boj24229 {
         }
 
         boards.sort(Comparator.comparingInt(it -> it[0]));
+        final Map<Integer, Integer> mappedBoards = new TreeMap<>();
         int prevR = 0;
         int prevL = -1;
-        final Map<Integer, Integer> mappedBoards = new TreeMap<>();
         for (int[] board : boards) {
             if (board[0] <= prevL) {
                 final int l = Math.max(board[1], prevL);
@@ -45,28 +44,16 @@ public class Boj24229 {
             }
         }
 
-        int current = 0;
+        int reachable = 0;
         int max = 0;
-        int jump = 0;
-        final Stack<int[]> stack = new Stack<>();
         for (Integer boardR : mappedBoards.keySet()) {
-            if (boardR > current + jump) {
-                while (!stack.isEmpty()) {
-                    final int[] prev = stack.peek();
-                    if (boardR <= prev[1] + prev[1] - prev[0]) {
-                        break;
-                    }
-                    stack.pop();
-                }
-                if (stack.isEmpty()) {
-                    break;
-                }
+            if (boardR <= reachable) {
+                final Integer boardL = mappedBoards.get(boardR);
+                reachable = Math.max(reachable, boardL * 2 - boardR);
+                max = boardL;
+            } else {
+                break;
             }
-            final Integer boardL = mappedBoards.get(boardR);
-            jump = boardL - boardR;
-            current = boardL;
-            max = Math.max(current, max);
-            stack.push(new int[]{boardR, boardL});
         }
         bw.write(Integer.toString(max));
         bw.flush();
