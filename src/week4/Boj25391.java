@@ -5,11 +5,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 public class Boj25391 {
 
@@ -23,22 +23,28 @@ public class Boj25391 {
         final int M = Integer.parseInt(st.nextToken());
         final int K = Integer.parseInt(st.nextToken());
 
-        final List<int[]> candidates = new ArrayList<>();
+        final Map<Integer, Integer> candidates = new TreeMap<>(Comparator.reverseOrder());
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            candidates.add(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
+            final int a = Integer.parseInt(st.nextToken());
+            final int b = Integer.parseInt(st.nextToken());
+            candidates.put(b, a);
         }
 
         long answer = 0;
-        candidates.sort(Collections.reverseOrder(Comparator.comparingInt(a -> a[1])));
-        for (int i = 0; i < K; i++) {
-            answer += candidates.get(i)[0];
+        int count = 0;
+        final PriorityQueue<Integer> specialCandidates = new PriorityQueue<>(Comparator.reverseOrder());
+        for (Integer b : candidates.keySet()) {
+            if (count < K) {
+                answer += candidates.get(b);
+                count++;
+            } else {
+                specialCandidates.offer(candidates.get(b));
+            }
         }
 
-        final List<int[]> specialCandidates = candidates.subList(K, N);
-        specialCandidates.sort(Collections.reverseOrder(Comparator.comparingInt(a -> a[0])));
         for (int i = 0; i < M; i++) {
-            answer += specialCandidates.get(i)[0];
+            answer += specialCandidates.poll();
         }
 
         bw.write(Long.toString(answer));
