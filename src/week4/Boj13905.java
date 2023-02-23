@@ -5,22 +5,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Boj13905 {
 
-    static int s;
-    static int e;
-    static Map<Integer, List<int[]>> map;
-    static int[] max;
+    static int[] roots;
 
     public static void main(String[] args) throws IOException {
         final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -31,44 +22,61 @@ public class Boj13905 {
         final int N = Integer.parseInt(st.nextToken());
         final int M = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
-        s = Integer.parseInt(st.nextToken());
-        e = Integer.parseInt(st.nextToken());
+        final int s = Integer.parseInt(st.nextToken());
+        final int e = Integer.parseInt(st.nextToken());
 
-        map = new HashMap<>();
-        for (int i = 1; i <= N; i++) {
-            map.put(i, new ArrayList<>());
-        }
-
+        final Queue<Bridge> queue = new PriorityQueue<>();
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             final int h1 = Integer.parseInt(st.nextToken());
             final int h2 = Integer.parseInt(st.nextToken());
             final int k = Integer.parseInt(st.nextToken());
-            map.get(h1).add(new int[]{h2, k});
-            map.get(h2).add(new int[]{h1, k});
+            queue.offer(new Bridge(h1, h2, k));
         }
 
-        max = new int[N + 1];
-        bfs();
-        bw.write(Integer.toString(max[e]));
+        roots = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            roots[i] = i;
+        }
+
+        int answer = 0;
+        while (!queue.isEmpty()) {
+            final Bridge bridge = queue.poll();
+            final int root1 = findRoot(bridge.h1);
+            final int root2 = findRoot(bridge.h2);
+            if (root1 != root2) {
+                roots[root2] = root1;
+                if (findRoot(s) == findRoot(e)) {
+                    answer = bridge.k;
+                    break;
+                }
+            }
+        }
+        bw.write(Integer.toString(answer));
         bw.flush();
     }
 
-    private static void bfs() {
-        final Queue<int[]> queue = new PriorityQueue<>(Collections.reverseOrder(Comparator.comparingInt(a -> a[1])));
-        queue.offer(new int[]{s, 1000001});
-        while (!queue.isEmpty()) {
-            final int[] home = queue.poll();
-            if (home[0] == e) {
-                continue;
-            }
-            for (int[] bridge : map.get(home[0])) {
-                final int weight = Math.min(home[1], bridge[1]);
-                if (max[bridge[0]] < weight) {
-                    max[bridge[0]] = weight;
-                    queue.offer(new int[]{bridge[0], weight});
-                }
-            }
+    private static int findRoot(final int h) {
+        if (roots[h] == h) {
+            return h;
+        }
+        return roots[h] = findRoot(roots[h]);
+    }
+
+    private static class Bridge implements Comparable<Bridge> {
+        int h1;
+        int h2;
+        int k;
+
+        Bridge(final int h1, final int h2, final int k) {
+            this.h1 = h1;
+            this.h2 = h2;
+            this.k = k;
+        }
+
+        @Override
+        public int compareTo(Bridge o) {
+            return o.k - this.k;
         }
     }
 }
