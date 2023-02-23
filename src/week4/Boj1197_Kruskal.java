@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Boj1197 {
+public class Boj1197_Kruskal {
 
     static int[] roots;
 
