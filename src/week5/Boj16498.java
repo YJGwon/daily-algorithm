@@ -5,11 +5,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 public class Boj16498 {
 
@@ -25,28 +24,29 @@ public class Boj16498 {
         final int B = Integer.parseInt(st.nextToken());
         final int C = Integer.parseInt(st.nextToken());
 
-        readCards(A, 'a');
-        readCards(B, 'b');
-        readCards(C, 'c');
+        readCards(A, 0);
+        readCards(B, 1);
+        readCards(C, 2);
 
-        final HashMap<Character, Integer> pickedCards = new HashMap<>();
-        TreeSet<Integer> pickedScores;
+        final int[] pickedCards = new int[3];
+        Arrays.fill(pickedCards, 100_000_001);
         int answer = Integer.MAX_VALUE;
         while (!cards.isEmpty()) {
             final Card card = cards.poll();
-            pickedCards.put(card.player, card.score);
-            if (pickedCards.size() < 3) {
+            pickedCards[card.player] = card.score;
+            if (pickedCards[0] == 100_000_001 || pickedCards[1] == 100_000_001 || pickedCards[2] == 100_000_001) {
                 continue;
             }
-            pickedScores = new TreeSet<>(pickedCards.values());
-            answer = Math.min(pickedScores.last() - pickedScores.first(), answer);
+            final int min = Math.min(pickedCards[0], Math.min(pickedCards[1], pickedCards[2]));
+            final int max = Math.max(pickedCards[0], Math.max(pickedCards[1], pickedCards[2]));
+            answer = Math.min(max - min, answer);
         }
 
         bw.write(Integer.toString(answer));
         bw.flush();
     }
 
-    private static void readCards(final int count, final char player) throws IOException {
+    private static void readCards(final int count, final int player) throws IOException {
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < count; i++) {
             cards.add(new Card(player, Integer.parseInt(st.nextToken())));
@@ -55,10 +55,10 @@ public class Boj16498 {
 
     private static class Card {
 
-        char player;
+        int player;
         int score;
 
-        Card(final char player, final int score) {
+        Card(final int player, final int score) {
             this.player = player;
             this.score = score;
         }
